@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>User Location</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <title>MASS Clock-In</title>
 </head>
 <body>
-    <h1>User Location Finder</h1>
-    <button onclick="getLocation()">Get My Location</button>
-    <p id="location"></p>
+    <button id="googleSignIn">Sign in with Google</button>
+    <div id="user">
+        <button onclick="getLocation()">Get My Location</button>
+        <p id="location"></p>
+    </div>
+    <div id="admin">
+        <p id="submissions"></p>
+    </div>
 
-    <script src="js/script.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>
