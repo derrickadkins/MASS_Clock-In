@@ -1,5 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
+import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBxcHxbdV9-mnjieZrqQMUqQZKLMl034N4",
@@ -14,6 +15,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+const db = getFirestore(app);
 
 document.addEventListener('DOMContentLoaded', () => {
     applyUser(auth.currentUser);
@@ -45,7 +47,6 @@ function applyUser(user) {
         var uid = user.uid;
         // check if user is admin
         // get admins document from users collection
-        const db = firebase.firestore();
         const adminsRef = db.collection('users').doc('admins');
         adminsRef.get().then((doc) => {
             if (doc.exists) {
