@@ -80,13 +80,13 @@ async function applyUser(user) {
     }
 }
 
-function getLocation() {
+document.getElementById('clockIn').addEventListener('click', () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(clockIn, showError);
     } else { 
         document.getElementById("response").innerHTML = "Geolocation is not supported by this browser.";
     }
-}
+});
 
 async function clockIn(position) {
     // submit to firestore
