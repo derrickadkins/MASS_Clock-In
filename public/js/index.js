@@ -51,6 +51,9 @@ document.getElementById('logout').addEventListener('click', () => {
 
 async function applyUser(user) {
     if (user) {
+        // Show user info
+        document.getElementById('user').innerHTML = `Signed in as ${user.displayName}`;
+
         // Show logout button
         document.getElementById('logout').style.display = 'block';
         document.getElementById('googleSignIn').style.display = 'none';
@@ -74,6 +77,8 @@ async function applyUser(user) {
             console.log("Error getting document:", error);
         }
     } else {
+        document.getElementById('user').innerHTML = '';
+
         // Show login button
         document.getElementById('googleSignIn').style.display = 'block';
         document.getElementById('logout').style.display = 'none';
