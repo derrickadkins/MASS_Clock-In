@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
-import { getFirestore } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDoc } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBxcHxbdV9-mnjieZrqQMUqQZKLMl034N4",
@@ -41,34 +41,35 @@ document.getElementById('googleSignIn').addEventListener('click', () => {
         });
 });
 
-function applyUser(user) {
+async function applyUser(user) {
     if (user) {
         // User is signed in
         var uid = user.uid;
-        // check if user is admin
-        // get admins document from users collection
-        const adminsRef = db.collection('users').doc('admins');
-        adminsRef.get().then((doc) => {
-            if (doc.exists) {
-                // check if user is admin
-                if (doc.data().emails.includes(user.email)) {
-                    // show admin div
+
+        // Get admins document from users collection
+        const adminsRef = doc(db, 'users', 'admins');
+        try {
+            const docSnap = await getDoc(adminsRef);
+
+            if (docSnap.exists()) {
+                // Check if user is admin
+                if (docSnap.data().emails.includes(user.email)) {
+                    // Show admin div
                     document.getElementById('admin').style.display = 'block';
                     document.getElementById('user').style.display = 'none';
                 } else {
-                    // show user div
+                    // Show user div
                     document.getElementById('user').style.display = 'block';
                     document.getElementById('admin').style.display = 'none';
                 }
             } else {
-                // doc.data() will be undefined in this case
                 console.log("No such document!");
             }
-        }).catch((error) => {
+        } catch (error) {
             console.log("Error getting document:", error);
-        });
+        }
     } else {
-        // hide user and admin divs
+        // Hide user and admin divs
         document.getElementById('user').style.display = 'none';
         document.getElementById('admin').style.display = 'none';
     }
