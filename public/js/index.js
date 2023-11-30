@@ -111,7 +111,7 @@ async function clockIn(position) {
     // show success message
     document.getElementById("response").innerHTML = "Clock in successful!";
     // refresh clock ins
-    getUserSumbissions(user);
+    getUserSubmissions(user);
 }
 
 function showError(error) {
