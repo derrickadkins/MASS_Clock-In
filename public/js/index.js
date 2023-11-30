@@ -80,8 +80,10 @@ async function applyUser(user) {
             if (docSnap.exists()) {
                 // Check if user is admin
                 if (docSnap.data().emails.includes(user.email)) {
+                    auth.currentUser.isAdmin = true;
                     getAllSubmissions();
                 } else {
+                    auth.currentUser.isAdmin = false;
                     getUserSumbissions(user);
                 }
             } else {
@@ -112,10 +114,9 @@ document.getElementById('clockIn').addEventListener('click', () => {
 
 async function clockIn(position) {
     // submit to firestore
-    const user = auth.currentUser;
     const timestamp = Date.now();
     const geopoint = new GeoPoint(position.coords.latitude, position.coords.longitude);
-    const docRef = doc(db, 'submissions', user.uid);
+    const docRef = doc(db, 'submissions', auth.currentUser.uid);
 
     const newSubmission = {
         time: timestamp,
@@ -133,7 +134,11 @@ async function clockIn(position) {
     // show success message
     document.getElementById("response").innerHTML = "Clock in successful!";
     // refresh clock ins
-    getUserSubmissions(user);
+    if(auth.currentUser.isAdmin){
+        getAllSubmissions();
+    }else{
+        getUserSubmissions(user);
+    }
 }
 
 function showError(error) {
@@ -159,6 +164,7 @@ function getUserSubmissions(user){
         if (doc.exists()) {
             let userSubmissions = doc.data().submissions;
             userSubmissions.sort((a, b) => b.time - a.time);
+            document.getElementById('submissions').innerHTML = '';
             userSubmissions.forEach((submission) => {
                 const time = submission.time;
                 const date = new Date(time);
@@ -201,6 +207,9 @@ async function getAllSubmissions(){
 
     // sort all submissions by time
     allSubmissions.sort((a, b) => b.time - a.time);
+
+    // clear the submissions paragraph
+    document.getElementById('submissions').innerHTML = '';
 
     // display all submissions
     allSubmissions.forEach((submission) => {
