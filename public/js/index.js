@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
-import { getAuth, getUser, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, GeoPoint, arrayUnion } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -51,6 +51,17 @@ document.getElementById('logout').addEventListener('click', () => {
 
 async function applyUser(user) {
     if (user) {
+        const docRef = doc(db, 'submissions', user.uid);
+        // set user email and name in firestore
+        await setDoc(docRef, {
+            email: user.email,
+            name: user.displayName
+        }, { merge: true }).then(() => {
+            console.log('Document successfully updated!');
+        }).catch((error) => {
+            console.error('Error updating document: ', error);
+        });
+        
         // Show user info
         document.getElementById('user').innerHTML = `Signed in as ${user.displayName}`;
 
@@ -165,9 +176,7 @@ async function getAllSubmissions(){
     const submissionsRef = collection(db, 'submissions');
     const querySnapshot = await getDocs(submissionsRef);
     querySnapshot.docs.forEach(async (doc) => {
-        const userId = doc.id;
-        const user = await getUser(userId);
-        const userName = user.displayName;
+        const userName = doc.data().name;
         const userSubmissions = doc.data().submissions;
         userSubmissions.forEach((submission) => {
             const time = submission.time;
