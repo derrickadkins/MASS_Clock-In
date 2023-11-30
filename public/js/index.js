@@ -154,10 +154,13 @@ function getUserSubmissions(user){
             const userSubmissions = doc.data().submissions;
             userSubmissions.forEach((submission) => {
                 const time = submission.time;
+                const date = new Date(time);
                 const place = submission.place;
-                console.log(`Time: ${time}, Place: ${place.latitude}, ${place.longitude}`);
+                // put place in a link to google maps
+                const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
+                console.log(`Time: ${date}, Place: ${place.latitude}, ${place.longitude}`);
                 // output to submissions paragraph
-                document.getElementById('submissions').innerHTML += `Time: ${time}, Place: ${place.latitude}, ${place.longitude}`;
+                document.getElementById('submissions').innerHTML += `Time: ${date}, Place: <a href="${link}">${place.latitude}, ${place.longitude}</a>`;
                 // add a line break
                 document.getElementById('submissions').innerHTML += '<br>';
             });
@@ -180,10 +183,12 @@ async function getAllSubmissions(){
         const userSubmissions = doc.data().submissions;
         userSubmissions.forEach((submission) => {
             const time = submission.time;
+            const date = new Date(time);
             const place = submission.place;
-            console.log(`User: ${userName}, Time: ${time}, Place: ${place.latitude}, ${place.longitude}`);
+            const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
+            console.log(`User: ${userName}, Time: ${date}, Place: ${place.latitude}, ${place.longitude}`);
             // output to submissions paragraph
-            document.getElementById('submissions').innerHTML += `User: ${userName}, Time: ${time}, Place: ${place.latitude}, ${place.longitude}`;
+            document.getElementById('submissions').innerHTML += `User: ${userName}, Time: ${date}, Place: <a href="${link}">${place.latitude}, ${place.longitude}</a>`;
             // add a line break
             document.getElementById('submissions').innerHTML += '<br>';
         });
