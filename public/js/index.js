@@ -164,23 +164,32 @@ function getUserSubmissions(user){
         if (doc.exists()) {
             let userSubmissions = doc.data().submissions;
             userSubmissions.sort((a, b) => b.time - a.time);
-            document.getElementById('submissions').innerHTML = '';
+            // clear the submissions table body
+            document.getElementById('submissionsBody').innerHTML = '';
             userSubmissions.forEach((submission) => {
-                const time = submission.time;
-                const date = new Date(time);
+                const time = new Date(submission.time).toLocaleString();
                 const place = submission.place;
-                // put place in a link to google maps
                 const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
-                console.log(`Time: ${date}, Place: ${place.latitude}, ${place.longitude}`);
-                // output to submissions paragraph
-                document.getElementById('submissions').innerHTML += `Time: ${date}, Place: <a href="${link}" target="_blank">${place.latitude}, ${place.longitude}</a>`;
-                // add a line break
-                document.getElementById('submissions').innerHTML += '<br>';
+                // create a table row
+                let row = document.createElement('tr');
+                // create table data for the time and place
+                let timeData = document.createElement('td');
+                timeData.textContent = time;
+                let placeData = document.createElement('td');
+                let placeLink = document.createElement('a');
+                placeLink.href = link;
+                placeLink.textContent = `${place.latitude}, ${place.longitude}`;
+                placeData.appendChild(placeLink);
+                // append the table data to the table row
+                row.appendChild(timeData);
+                row.appendChild(placeData);
+                // append the table row to the submissions table body
+                document.getElementById('submissionsBody').appendChild(row);
             });
         } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
-            document.getElementById('submissions').innerHTML = 'No submissions found';
+            document.getElementById('submissionsBody').innerHTML = 'No submissions found';
         }
     }).catch((error) => {
         console.log("Error getting document:", error);
@@ -208,19 +217,31 @@ async function getAllSubmissions(){
     // sort all submissions by time
     allSubmissions.sort((a, b) => b.time - a.time);
 
-    // clear the submissions paragraph
-    document.getElementById('submissions').innerHTML = '';
+    // clear the submissions table body
+    document.getElementById('submissionsBody').innerHTML = '';
 
     // display all submissions
     allSubmissions.forEach((submission) => {
-        const time = submission.time;
-        const date = new Date(time);
+        const time = new Date(submission.time).toLocaleString();
         const place = submission.place;
         const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
-        console.log(`User: ${submission.userName}, Time: ${date}, Place: ${place.latitude}, ${place.longitude}`);
-        // output to submissions paragraph
-        document.getElementById('submissions').innerHTML += `User: ${submission.userName}, Time: ${date}, Place: <a href="${link}" target="_blank">${place.latitude}, ${place.longitude}</a>`;
-        // add a line break
-        document.getElementById('submissions').innerHTML += '<br>';
+        // create a table row
+        let row = document.createElement('tr');
+        // create table data for the user's name, time, and place
+        let nameData = document.createElement('td');
+        nameData.textContent = submission.userName;
+        let timeData = document.createElement('td');
+        timeData.textContent = time;
+        let placeData = document.createElement('td');
+        let placeLink = document.createElement('a');
+        placeLink.href = link;
+        placeLink.textContent = `${place.latitude}, ${place.longitude}`;
+        placeData.appendChild(placeLink);
+        // append the table data to the table row
+        row.appendChild(nameData);
+        row.appendChild(timeData);
+        row.appendChild(placeData);
+        // append the table row to the submissions table body
+        document.getElementById('submissionsBody').appendChild(row);
     });
 }
