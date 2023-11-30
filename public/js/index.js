@@ -158,7 +158,7 @@ function getUserSubmissions(user){
     getDoc(docRef).then((doc) => {
         if (doc.exists()) {
             let userSubmissions = doc.data().submissions;
-            userSubmissions.sort((a, b) => a.time - b.time);
+            userSubmissions.sort((a, b) => b.time - a.time);
             userSubmissions.forEach((submission) => {
                 const time = submission.time;
                 const date = new Date(time);
@@ -188,7 +188,7 @@ async function getAllSubmissions(){
     querySnapshot.docs.forEach(async (doc) => {
         const userName = doc.data().name;
         let userSubmissions = doc.data().submissions;
-        userSubmissions.sort((a, b) => a.time - b.time);
+        userSubmissions.sort((a, b) => b.time - a.time);
         userSubmissions.forEach((submission) => {
             const time = submission.time;
             const date = new Date(time);
