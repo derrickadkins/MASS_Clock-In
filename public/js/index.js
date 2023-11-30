@@ -159,10 +159,10 @@ function getUserSumbissions(user){
     });
 }
 
-function getAllSubmissions(){
+async function getAllSubmissions(){
     // get every document from the submissions collection
     const submissionsRef = collection(db, 'submissions');
-    const querySnapshot = getDocs(submissionsRef);
+    const querySnapshot = await getDocs(submissionsRef);
     querySnapshot.forEach((doc) => {
         console.log(`${doc.id} => ${doc.data()}`);
         // output to submissions paragraph
