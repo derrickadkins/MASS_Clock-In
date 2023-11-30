@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
-import { getFirestore, collection, doc, getDoc, getDocs } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDoc, getDocs, GeoPoint, FieldValue } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBxcHxbdV9-mnjieZrqQMUqQZKLMl034N4",
@@ -92,7 +92,7 @@ async function clockIn(position) {
     // submit to firestore
     const user = auth.currentUser;
     const timestamp = Date.now();
-    const geopoint = new firebase.firestore.GeoPoint(position.coords.latitude, position.coords.longitude);
+    const geopoint = new GeoPoint(position.coords.latitude, position.coords.longitude);
     const docRef = doc(db, 'submissions', user.uid);
 
     const newSubmission = {
@@ -101,7 +101,7 @@ async function clockIn(position) {
     };
 
     await updateDoc(docRef, {
-        submissions: firebase.firestore.FieldValue.arrayUnion(newSubmission)
+        submissions: FieldValue.arrayUnion(newSubmission)
     }).then(() => {
         console.log('Document successfully updated!');
     }).catch((error) => {
