@@ -1,6 +1,6 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
 import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
-import { getFirestore, collection, doc, getDoc, getDocs, updateDoc, GeoPoint, arrayUnion } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
+import { getFirestore, collection, doc, getDoc, getDocs, setDoc, GeoPoint, arrayUnion } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
 
 const firebaseConfig = {
     apiKey: "AIzaSyBxcHxbdV9-mnjieZrqQMUqQZKLMl034N4",
@@ -100,9 +100,9 @@ async function clockIn(position) {
         place: geopoint
     };
 
-    await updateDoc(docRef, {
+    await setDoc(docRef, {
         submissions: arrayUnion(newSubmission)
-    }).then(() => {
+    }, { merge: true }).then(() => {
         console.log('Document successfully updated!');
     }).catch((error) => {
         console.error('Error updating document: ', error);
@@ -111,7 +111,7 @@ async function clockIn(position) {
     // show success message
     document.getElementById("response").innerHTML = "Clock in successful!";
     // refresh clock ins
-    getUserSubmissions(user);
+    getUserSumbissions(user);
 }
 
 function showError(error) {
