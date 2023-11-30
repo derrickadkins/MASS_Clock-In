@@ -6,12 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
-    <p id="user"></p>
-    <button id="googleSignIn">Sign in with Google</button>
-    <button id="logout">Sign Out</button>
-    <button id="clockIn">Clock-In</button>
-    <p id="response"></p>
-    <p id="submissions"></p>
+    <div class="container pt-3">
+        <p id="user">Signed in as Derrick Adkins</p>
+        <button id="googleSignIn" class="btn btn-primary">Sign in with Google</button>
+        <button id="logout" class="btn btn-danger">Sign Out</button>
+    </div>
+    <div class="container pt-3">
+        <button id="clockIn" class="btn btn-success">Clock-In</button>
+    </div>
+    <div class="container pt-3">
+        <p id="response">Response</p>
+    </div>
+    <div class="container pt-3">
+        <p id="submissions">Submissions</p>
+    </div>
 
     <script type="module" src="js/index.js"></script>
 </body>

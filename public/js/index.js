@@ -182,23 +182,36 @@ function getUserSubmissions(user){
 }
 
 async function getAllSubmissions(){
+    // create an array to hold all submissions
+    let allSubmissions = [];
+
     // get every document from the submissions collection
     const submissionsRef = collection(db, 'submissions');
     const querySnapshot = await getDocs(submissionsRef);
-    querySnapshot.docs.forEach(async (doc) => {
+    querySnapshot.docs.forEach((doc) => {
         const userName = doc.data().name;
         let userSubmissions = doc.data().submissions;
-        userSubmissions.sort((a, b) => b.time - a.time);
         userSubmissions.forEach((submission) => {
-            const time = submission.time;
-            const date = new Date(time);
-            const place = submission.place;
-            const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
-            console.log(`User: ${userName}, Time: ${date}, Place: ${place.latitude}, ${place.longitude}`);
-            // output to submissions paragraph
-            document.getElementById('submissions').innerHTML += `User: ${userName}, Time: ${date}, Place: <a href="${link}" target="_blank">${place.latitude}, ${place.longitude}</a>`;
-            // add a line break
-            document.getElementById('submissions').innerHTML += '<br>';
+            // add the user's name to each submission
+            submission.userName = userName;
+            // add the submission to the all submissions array
+            allSubmissions.push(submission);
         });
+    });
+
+    // sort all submissions by time
+    allSubmissions.sort((a, b) => b.time - a.time);
+
+    // display all submissions
+    allSubmissions.forEach((submission) => {
+        const time = submission.time;
+        const date = new Date(time);
+        const place = submission.place;
+        const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
+        console.log(`User: ${submission.userName}, Time: ${date}, Place: ${place.latitude}, ${place.longitude}`);
+        // output to submissions paragraph
+        document.getElementById('submissions').innerHTML += `User: ${submission.userName}, Time: ${date}, Place: <a href="${link}" target="_blank">${place.latitude}, ${place.longitude}</a>`;
+        // add a line break
+        document.getElementById('submissions').innerHTML += '<br>';
     });
 }
