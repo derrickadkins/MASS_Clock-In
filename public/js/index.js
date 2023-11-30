@@ -69,6 +69,9 @@ async function applyUser(user) {
         document.getElementById('logout').style.display = 'block';
         document.getElementById('googleSignIn').style.display = 'none';
 
+        // show clock in button
+        document.getElementById('clockIn').style.display = 'block';
+
         // Get admins document from users collection
         const adminsRef = doc(db, 'users', 'admins');
         try {
@@ -89,6 +92,9 @@ async function applyUser(user) {
         }
     } else {
         document.getElementById('user').innerHTML = '';
+
+        // hide clock in button
+        document.getElementById('clockIn').style.display = 'none';
 
         // Show login button
         document.getElementById('googleSignIn').style.display = 'block';
@@ -160,7 +166,7 @@ function getUserSubmissions(user){
                 const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
                 console.log(`Time: ${date}, Place: ${place.latitude}, ${place.longitude}`);
                 // output to submissions paragraph
-                document.getElementById('submissions').innerHTML += `Time: ${date}, Place: <a href="${link}">${place.latitude}, ${place.longitude}</a>`;
+                document.getElementById('submissions').innerHTML += `Time: ${date}, Place: <a href="${link}" target="_blank">${place.latitude}, ${place.longitude}</a>`;
                 // add a line break
                 document.getElementById('submissions').innerHTML += '<br>';
             });
@@ -188,7 +194,7 @@ async function getAllSubmissions(){
             const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
             console.log(`User: ${userName}, Time: ${date}, Place: ${place.latitude}, ${place.longitude}`);
             // output to submissions paragraph
-            document.getElementById('submissions').innerHTML += `User: ${userName}, Time: ${date}, Place: <a href="${link}">${place.latitude}, ${place.longitude}</a>`;
+            document.getElementById('submissions').innerHTML += `User: ${userName}, Time: ${date}, Place: <a href="${link}" target="_blank">${place.latitude}, ${place.longitude}</a>`;
             // add a line break
             document.getElementById('submissions').innerHTML += '<br>';
         });
