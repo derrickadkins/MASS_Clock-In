@@ -164,14 +164,17 @@ async function getAllSubmissions(){
     // get every document from the submissions collection
     const submissionsRef = collection(db, 'submissions');
     const querySnapshot = await getDocs(submissionsRef);
-    querySnapshot.docs.forEach((doc) => {
+    querySnapshot.docs.forEach(async (doc) => {
+        const userId = doc.id;
+        const user = await auth.getUser(userId);
+        const userName = user.displayName;
         const userSubmissions = doc.data().submissions;
         userSubmissions.forEach((submission) => {
             const time = submission.time;
             const place = submission.place;
-            console.log(`Time: ${time}, Place: ${place.latitude}, ${place.longitude}`);
+            console.log(`User: ${userName}, Time: ${time}, Place: ${place.latitude}, ${place.longitude}`);
             // output to submissions paragraph
-            document.getElementById('submissions').innerHTML += `Time: ${time}, Place: ${place.latitude}, ${place.longitude}`;
+            document.getElementById('submissions').innerHTML += `User: ${userName}, Time: ${time}, Place: ${place.latitude}, ${place.longitude}`;
             // add a line break
             document.getElementById('submissions').innerHTML += '<br>';
         });
