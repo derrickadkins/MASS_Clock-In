@@ -11,16 +11,15 @@ const firebaseConfig = {
     measurementId: "G-K43TBWDDDD"
 };
 
-const firebase = initializeApp(firebaseConfig);
-const auth = getAuth(firebase);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 
-//on document ready
 document.addEventListener('DOMContentLoaded', () => {
-    applyUser(firebase.auth().currentUser);
+    applyUser(auth.currentUser);
 });
 
-firebase.auth().onAuthStateChanged((user) => {
+auth.onAuthStateChanged((user) => {
     applyUser(user);
 });
 
