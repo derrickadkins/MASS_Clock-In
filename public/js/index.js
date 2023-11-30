@@ -63,16 +63,8 @@ async function applyUser(user) {
             if (docSnap.exists()) {
                 // Check if user is admin
                 if (docSnap.data().emails.includes(user.email)) {
-                    // Show admin div
-                    document.getElementById('admin').style.display = 'block';
-                    document.getElementById('user').style.display = 'none';
-
                     getAllSubmissions();
                 } else {
-                    // Show user div
-                    document.getElementById('user').style.display = 'block';
-                    document.getElementById('admin').style.display = 'none';
-
                     getUserSumbissions(user);
                 }
             } else {
@@ -85,10 +77,6 @@ async function applyUser(user) {
         // Show login button
         document.getElementById('googleSignIn').style.display = 'block';
         document.getElementById('logout').style.display = 'none';
-
-        // Hide user and admin divs
-        document.getElementById('user').style.display = 'none';
-        document.getElementById('admin').style.display = 'none';
     }
 }
 
@@ -96,7 +84,7 @@ function getLocation() {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(clockIn, showError);
     } else { 
-        document.getElementById("location").innerHTML = "Geolocation is not supported by this browser.";
+        document.getElementById("response").innerHTML = "Geolocation is not supported by this browser.";
     }
 }
 
@@ -123,36 +111,44 @@ async function clockIn(position) {
     // show success message
     document.getElementById("response").innerHTML = "Clock in successful!";
     // refresh clock ins
-    getUserSumbissions(user);
+    getUserSubmissions(user);
 }
 
 function showError(error) {
     switch(error.code) {
         case error.PERMISSION_DENIED:
-            document.getElementById("location").innerHTML = "User denied the request for Geolocation."
+            document.getElementById("response").innerHTML = "User denied the request for Geolocation."
             break;
         case error.POSITION_UNAVAILABLE:
-            document.getElementById("location").innerHTML = "Location information is unavailable."
+            document.getElementById("response").innerHTML = "Location information is unavailable."
             break;
         case error.TIMEOUT:
-            document.getElementById("location").innerHTML = "The request to get user location timed out."
+            document.getElementById("response").innerHTML = "The request to get user location timed out."
             break;
         case error.UNKNOWN_ERROR:
-            document.getElementById("location").innerHTML = "An unknown error occurred."
+            document.getElementById("response").innerHTML = "An unknown error occurred."
             break;
     }
 }
 
-function getUserSumbissions(user){
+function getUserSubmissions(user){
     const docRef = doc(db, 'submissions', user.uid);
     getDoc(docRef).then((doc) => {
         if (doc.exists()) {
-            console.log("Document data:", doc.data());
-            document.getElementById('clockIns').innerHTML = doc.data();
+            const userSubmissions = doc.data().submissions;
+            userSubmissions.forEach((submission) => {
+                const time = submission.time;
+                const place = submission.place;
+                console.log(`Time: ${time}, Place: ${place.latitude}, ${place.longitude}`);
+                // output to submissions paragraph
+                document.getElementById('submissions').innerHTML += `Time: ${time}, Place: ${place.latitude}, ${place.longitude}`;
+                // add a line break
+                document.getElementById('submissions').innerHTML += '<br>';
+            });
         } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
-            document.getElementById('clockIns').innerHTML = 'No submissions found';
+            document.getElementById('submissions').innerHTML = 'No submissions found';
         }
     }).catch((error) => {
         console.log("Error getting document:", error);
@@ -163,11 +159,16 @@ async function getAllSubmissions(){
     // get every document from the submissions collection
     const submissionsRef = collection(db, 'submissions');
     const querySnapshot = await getDocs(submissionsRef);
-    querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data()}`);
-        // output to submissions paragraph
-        document.getElementById('submissions').innerHTML += `${doc.id} => ${doc.data()}`;
-        // add a line break
-        document.getElementById('submissions').innerHTML += '<br>';
+    querySnapshot.docs.forEach((doc) => {
+        const userSubmissions = doc.data().submissions;
+        userSubmissions.forEach((submission) => {
+            const time = submission.time;
+            const place = submission.place;
+            console.log(`Time: ${time}, Place: ${place.latitude}, ${place.longitude}`);
+            // output to submissions paragraph
+            document.getElementById('submissions').innerHTML += `Time: ${time}, Place: ${place.latitude}, ${place.longitude}`;
+            // add a line break
+            document.getElementById('submissions').innerHTML += '<br>';
+        });
     });
 }
