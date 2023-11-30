@@ -1,5 +1,5 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js';
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
+import { getAuth, getUser, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js';
 import { getFirestore, collection, doc, getDoc, getDocs, setDoc, GeoPoint, arrayUnion } from 'https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js';
 
 const firebaseConfig = {
@@ -166,7 +166,7 @@ async function getAllSubmissions(){
     const querySnapshot = await getDocs(submissionsRef);
     querySnapshot.docs.forEach(async (doc) => {
         const userId = doc.id;
-        const user = await auth.getUser(userId);
+        const user = await getUser(userId);
         const userName = user.displayName;
         const userSubmissions = doc.data().submissions;
         userSubmissions.forEach((submission) => {
