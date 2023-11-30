@@ -2,8 +2,9 @@
 <html>
 <head>
     <title>MASS Clock-In</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <script src="https://kryogenix.org/code/browser/sorttable/sorttable.js"></script>
 </head>
 <body>
     <div class="container pt-3">
@@ -18,7 +19,7 @@
         <p id="response"></p>
     </div>
     <div class="container pt-3">
-        <table class="table" id="submissionsTable">
+        <table class="table sortable" id="submissionsTable">
             <thead>
                 <tr>
                     <th scope="col">User</th>
