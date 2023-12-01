@@ -25,6 +25,20 @@ auth.onAuthStateChanged((user) => {
     applyUser(user);
 });
 
+$(document).ready(function() {
+    $('#submissionsTable').DataTable({
+        "columnDefs": [
+            {
+                "targets": 1,
+                "render": function(data) {
+                    var date = new Date(data);
+                    return date.getTime();
+                }
+            }
+        ]
+    });
+});
+
 document.getElementById('googleSignIn').addEventListener('click', () => {
     signInWithPopup(auth, provider)
         .then(async (result) => {

@@ -4,7 +4,7 @@
     <title>MASS Clock-In</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <script src="https://kryogenix.org/code/browser/sorttable/sorttable.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 </head>
 <body>
     <div class="container pt-3">
@@ -33,35 +33,7 @@
     </div>
 
     <script type="module" src="js/index.js"></script>
-    <script src="https://kryogenix.org/code/browser/sorttable/sorttable.js"></script>
-    <script>
-        window.onload = function() {
-            // Define a custom sort function.
-            sorttable.date_sort = function(a, b) {
-                // sort function for sorting dates in 'dd/mm/yyyy, HH:MM:SS AM' format
-                aa = a.text.split(', ');
-                bb = b.text.split(', ');
-                date_a = aa[0].split('/');
-                date_b = bb[0].split('/');
-                time_a = aa[1].split(':');
-                time_b = bb[1].split(':');
-                date_a = new Date(date_a[2], date_a[1], date_a[0], time_a[0], time_a[1], time_a[2]);
-                date_b = new Date(date_b[2], date_b[1], date_b[0], time_b[0], time_b[1], time_b[2]);
-                return date_a - date_b;
-            };
-
-            // Add the custom sort function to the sort functions object.
-            sorttable.sort_fns['date'] = sorttable.date_sort;
-
-            // Get the 'Time' column.
-            var timeColumn = document.querySelector('#submissionsTable thead th:nth-child(2)');
-
-            // Add the 'sorttable_numeric' class to the 'Time' column.
-            timeColumn.classList.add('sorttable_date');
-
-            // Make the table sortable.
-            sorttable.makeSortable(document.getElementById('submissionsTable'));
-        };
-    </script>
+    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
 </body>
 </html>
