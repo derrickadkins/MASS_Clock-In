@@ -98,7 +98,7 @@ async function applyUser(user) {
                     getAllSubmissions();
                 } else {
                     auth.currentUser.isAdmin = false;
-                    getUserSumbissions(user);
+                    getUserSubmissions(user);
                 }
             } else {
                 console.log("No such document!");
