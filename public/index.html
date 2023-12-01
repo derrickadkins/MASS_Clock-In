@@ -7,19 +7,43 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 </head>
 <body>
-    <div class="container pt-3">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="img/MidAmericaLogo.png" width="150" height="50" class="d-inline-block align-top" alt="MidAmerica Safety Solutions Logo">
+        </a>
+        <div class="mx-auto text-center font-weight-bold">
+            MASS Clock-In
+        </div>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="ml-auto">
+                    <p id="user" class="text-right"></p>
+                </li>
+                <li class="ml-auto">
+                    <button id="googleSignIn" class="btn btn-primary">Sign in with Google</button>
+                </li>
+                <li class="ml-auto">
+                    <button id="logout" class="btn btn-danger" hidden>Sign Out</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- <div class="container pt-3">
         <p id="user"></p>
         <button id="googleSignIn" class="btn btn-primary">Sign in with Google</button>
         <button id="logout" class="btn btn-danger" hidden>Sign Out</button>
-    </div>
-    <div class="container pt-3">
+    </div> -->
+    <div class="container pt-3 d-flex justify-content-center">
         <button id="clockIn" class="btn btn-success" hidden>Clock-In</button>
     </div>
     <div class="container pt-3">
         <p id="response"></p>
     </div>
     <div class="container pt-3">
-        <table class="table" id="allSubmissionsTable" hidden>
+        <table class="table-striped" id="allSubmissionsTable" hidden>
             <thead>
                 <tr>
                     <th scope="col">User</th>
@@ -32,7 +56,7 @@
         </table>
     </div>
     <div class="container pt-3">
-        <table class="table" id="userSubmissionsTable" hidden>
+        <table class="table-striped" id="userSubmissionsTable" hidden>
             <thead>
                 <tr>
                     <th scope="col">Time</th>
@@ -43,9 +67,13 @@
             </tbody>
         </table>
     </div>
+    <div id="map" style="height: 400px; width: 100%;"></div>
 
     <script type="module" src="js/index.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script>
 </body>
 </html>

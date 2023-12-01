@@ -63,7 +63,7 @@ async function applyUser(user) {
         });
         
         // Show user info
-        document.getElementById('user').innerHTML = `Signed in as ${user.displayName}`;
+        document.getElementById('user').innerHTML = `Signed in as ${user.displayName}<br>${user.email}`;
 
         // Show logout button
         document.getElementById('logout').hidden = false;
@@ -273,4 +273,12 @@ function initDataTable(tableId, dateColumnIndex = 1){
         ],
         "order": [[ dateColumnIndex, "desc" ]],
     });
+}
+
+function initMap() {
+    var options = {
+        zoom: 8,
+        center: {lat: 40.7128, lng: -74.0060} // Coordinates for New York City
+    }
+    var map = new google.maps.Map(document.getElementById('map'), options);
 }
