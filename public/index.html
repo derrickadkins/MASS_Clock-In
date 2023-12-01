@@ -10,16 +10,16 @@
     <div class="container pt-3">
         <p id="user"></p>
         <button id="googleSignIn" class="btn btn-primary">Sign in with Google</button>
-        <button id="logout" class="btn btn-danger">Sign Out</button>
+        <button id="logout" class="btn btn-danger" hidden>Sign Out</button>
     </div>
     <div class="container pt-3">
-        <button id="clockIn" class="btn btn-success">Clock-In</button>
+        <button id="clockIn" class="btn btn-success" hidden>Clock-In</button>
     </div>
     <div class="container pt-3">
         <p id="response"></p>
     </div>
     <div class="container pt-3">
-        <table class="table" id="submissionsTable">
+        <table class="table" id="allSubmissionsTable" hidden>
             <thead>
                 <tr>
                     <th scope="col">User</th>
@@ -27,7 +27,19 @@
                     <th scope="col">Place</th>
                 </tr>
             </thead>
-            <tbody id="submissionsBody">
+            <tbody id="allSubmissionsBody">
+            </tbody>
+        </table>
+    </div>
+    <div class="container pt-3">
+        <table class="table" id="userSubmissionsTable" hidden>
+            <thead>
+                <tr>
+                    <th scope="col">Time</th>
+                    <th scope="col">Place</th>
+                </tr>
+            </thead>
+            <tbody id="userSubmissionsBody">
             </tbody>
         </table>
     </div>

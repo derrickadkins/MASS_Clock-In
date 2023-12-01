@@ -25,20 +25,6 @@ auth.onAuthStateChanged((user) => {
     applyUser(user);
 });
 
-$(document).ready(function() {
-    $('#submissionsTable').DataTable({
-        "columnDefs": [
-            {
-                "targets": 1,
-                "render": function(data) {
-                    var date = new Date(data);
-                    return date.getTime();
-                }
-            }
-        ]
-    });
-});
-
 document.getElementById('googleSignIn').addEventListener('click', () => {
     signInWithPopup(auth, provider)
         .then(async (result) => {
@@ -80,11 +66,11 @@ async function applyUser(user) {
         document.getElementById('user').innerHTML = `Signed in as ${user.displayName}`;
 
         // Show logout button
-        document.getElementById('logout').style.display = 'block';
-        document.getElementById('googleSignIn').style.display = 'none';
+        document.getElementById('logout').hidden = false;
+        document.getElementById('googleSignIn').hidden = true;
 
         // show clock in button
-        document.getElementById('clockIn').style.display = 'block';
+        document.getElementById('clockIn').hidden = false;
 
         // Get admins document from users collection
         const adminsRef = doc(db, 'users', 'admins');
@@ -94,9 +80,13 @@ async function applyUser(user) {
             if (docSnap.exists()) {
                 // Check if user is admin
                 if (docSnap.data().emails.includes(user.email)) {
+                    document.getElementById('allSubmissionsTable').hidden = false;
+                    document.getElementById('userSubmissionsTable').hidden = true;
                     auth.currentUser.isAdmin = true;
                     getAllSubmissions();
                 } else {
+                    document.getElementById('allSubmissionsTable').hidden = true;
+                    document.getElementById('userSubmissionsTable').hidden = false;
                     auth.currentUser.isAdmin = false;
                     getUserSubmissions(user);
                 }
@@ -110,11 +100,11 @@ async function applyUser(user) {
         document.getElementById('user').innerHTML = '';
 
         // hide clock in button
-        document.getElementById('clockIn').style.display = 'none';
+        document.getElementById('clockIn').hidden = true;
 
         // Show login button
-        document.getElementById('googleSignIn').style.display = 'block';
-        document.getElementById('logout').style.display = 'none';
+        document.getElementById('googleSignIn').hidden = false;
+        document.getElementById('logout').hidden = true;
     }
 }
 
@@ -151,7 +141,7 @@ async function clockIn(position) {
     if(auth.currentUser.isAdmin){
         getAllSubmissions();
     }else{
-        getUserSubmissions(user);
+        getUserSubmissions(auth.currentUser);
     }
 }
 
@@ -179,7 +169,7 @@ function getUserSubmissions(user){
             let userSubmissions = doc.data().submissions;
             userSubmissions.sort((a, b) => b.time - a.time);
             // clear the submissions table body
-            document.getElementById('submissionsBody').innerHTML = '';
+            document.getElementById('userSubmissionsBody').innerHTML = '';
             userSubmissions.forEach((submission) => {
                 const time = new Date(submission.time).toLocaleString();
                 const place = submission.place;
@@ -192,18 +182,20 @@ function getUserSubmissions(user){
                 let placeData = document.createElement('td');
                 let placeLink = document.createElement('a');
                 placeLink.href = link;
+                placeLink.target = '_blank';
                 placeLink.textContent = `${place.latitude}, ${place.longitude}`;
                 placeData.appendChild(placeLink);
                 // append the table data to the table row
                 row.appendChild(timeData);
                 row.appendChild(placeData);
                 // append the table row to the submissions table body
-                document.getElementById('submissionsBody').appendChild(row);
+                document.getElementById('userSubmissionsBody').appendChild(row);
             });
+            initDataTable('#userSubmissionsTable', 0);
         } else {
             // doc.data() will be undefined in this case
             console.log("No such document!");
-            document.getElementById('submissionsBody').innerHTML = 'No submissions found';
+            document.getElementById('userSubmissionsBody').innerHTML = 'No submissions found';
         }
     }).catch((error) => {
         console.log("Error getting document:", error);
@@ -232,7 +224,7 @@ async function getAllSubmissions(){
     allSubmissions.sort((a, b) => b.time - a.time);
 
     // clear the submissions table body
-    document.getElementById('submissionsBody').innerHTML = '';
+    document.getElementById('allSubmissionsBody').innerHTML = '';
 
     // display all submissions
     allSubmissions.forEach((submission) => {
@@ -249,6 +241,7 @@ async function getAllSubmissions(){
         let placeData = document.createElement('td');
         let placeLink = document.createElement('a');
         placeLink.href = link;
+        placeLink.target = '_blank';
         placeLink.textContent = `${place.latitude}, ${place.longitude}`;
         placeData.appendChild(placeLink);
         // append the table data to the table row
@@ -256,6 +249,28 @@ async function getAllSubmissions(){
         row.appendChild(timeData);
         row.appendChild(placeData);
         // append the table row to the submissions table body
-        document.getElementById('submissionsBody').appendChild(row);
+        document.getElementById('allSubmissionsBody').appendChild(row);
+    });
+    initDataTable('#allSubmissionsTable');
+}
+
+function initDataTable(tableId, dateColumnIndex = 1){
+    // Check if DataTable is already initialized
+    if ($.fn.DataTable.isDataTable(tableId)) {
+        $(tableId).DataTable().destroy();
+    }
+
+    $(tableId).DataTable({
+        "createdRow": function(row, data) {
+            var date = new Date(data[dateColumnIndex]);
+            $('td', row).eq(dateColumnIndex).html(date.toLocaleString());
+        },
+        "columnDefs": [
+            {
+                "targets": dateColumnIndex,
+                "type": "date"
+            }
+        ],
+        "order": [[ dateColumnIndex, "desc" ]],
     });
 }
