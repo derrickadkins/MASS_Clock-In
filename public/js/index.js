@@ -50,6 +50,9 @@ document.getElementById('logout').addEventListener('click', () => {
 });
 
 async function applyUser(user) {
+    // close collapsable menu
+    document.getElementById('navbarNav').classList.remove('show');
+
     if (user) {
         const docRef = doc(db, 'submissions', user.uid);
         // set user email and name in firestore
@@ -63,7 +66,7 @@ async function applyUser(user) {
         });
         
         // Show user info
-        document.getElementById('user').innerHTML = `Signed in as ${user.displayName}<br>${user.email}`;
+        document.getElementById('user').innerHTML = `Signed in as ${user.displayName}<br><a href="https://www.gmail.com" target="_blank">${user.email}</a>`;
 
         // Show logout button
         document.getElementById('logout').hidden = false;
@@ -90,6 +93,7 @@ async function applyUser(user) {
                     auth.currentUser.isAdmin = false;
                     getUserSubmissions(user);
                 }
+                document.getElementById('submissionsTableContainer').hidden = false;
             } else {
                 console.log("No such document!");
             }
@@ -101,6 +105,12 @@ async function applyUser(user) {
 
         // hide clock in button
         document.getElementById('clockIn').hidden = true;
+
+        // hide submissions tables
+        document.getElementById('submissionsTableContainer').hidden = true;
+
+        // clear the submissions table body
+        document.getElementById('allSubmissionsBody').innerHTML = '';
 
         // Show login button
         document.getElementById('googleSignIn').hidden = false;
