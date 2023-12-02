@@ -292,3 +292,14 @@ function initMap() {
     }
     var map = new google.maps.Map(document.getElementById('map'), options);
 }
+
+document.getElementById('datePicker').addEventListener('change', function() {
+    var parts = this.value.split('-');
+    var selectedDate = new Date(parts[0], parts[1] - 1, parts[2]);
+    const inputs = Array.from(document.getElementsByTagName('input'));
+    let searchInput = inputs.find(input => input.type === 'search');
+    if (searchInput) {
+        searchInput.value = selectedDate.toLocaleDateString();
+        searchInput.dispatchEvent(new Event('input'));
+    }
+});
