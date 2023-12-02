@@ -122,7 +122,7 @@ document.getElementById('clockIn').addEventListener('click', () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(clockIn, showError);
     } else { 
-        document.getElementById("response").innerHTML = "Geolocation is not supported by this browser.";
+        showError("Geolocation is not supported by this browser.");
     }
 });
 
@@ -145,8 +145,8 @@ async function clockIn(position) {
         console.error('Error updating document: ', error);
     });
 
-    // show success message
-    document.getElementById("response").innerHTML = "Clock in successful!";
+    showSuccess("Clock in successful!");
+
     // refresh clock ins
     if(auth.currentUser.isAdmin){
         getAllSubmissions();
@@ -155,20 +155,46 @@ async function clockIn(position) {
     }
 }
 
+const response = document.getElementById("response");
+
+function showSuccess(message) {
+    clearResponse();
+    const textNode = document.createTextNode(message);
+    response.appendChild(textNode);
+    response.classList.remove('alert-danger');
+    response.classList.add('alert-success');
+    response.hidden = false;
+}
+
 function showError(error) {
+    clearResponse();
+    let errorMessage;
     switch(error.code) {
         case error.PERMISSION_DENIED:
-            document.getElementById("response").innerHTML = "User denied the request for Geolocation."
+            errorMessage = "User denied the request for Geolocation.";
             break;
         case error.POSITION_UNAVAILABLE:
-            document.getElementById("response").innerHTML = "Location information is unavailable."
+            errorMessage = "Location information is unavailable.";
             break;
         case error.TIMEOUT:
-            document.getElementById("response").innerHTML = "The request to get user location timed out."
+            errorMessage = "The request to get user location timed out.";
             break;
         case error.UNKNOWN_ERROR:
-            document.getElementById("response").innerHTML = "An unknown error occurred."
+            errorMessage = "An unknown error occurred.";
             break;
+        default:
+            errorMessage = error;
+    }
+    const textNode = document.createTextNode(errorMessage);
+    response.appendChild(textNode);
+    response.classList.remove('alert-success');
+    response.classList.add('alert-danger');
+    response.hidden = false;
+}
+
+function clearResponse() {
+    while (response.lastChild && response.lastChild.nodeType === 3) {
+        response.removeChild(response.lastChild);
     }
 }
 
@@ -178,8 +204,7 @@ function getUserSubmissions(user){
         if (doc.exists()) {
             let userSubmissions = doc.data().submissions;
             userSubmissions.sort((a, b) => b.time - a.time);
-            // clear the submissions table body
-            document.getElementById('userSubmissionsBody').innerHTML = '';
+            clearDataTable('#userSubmissionsTable');
             userSubmissions.forEach((submission) => {
                 const time = new Date(submission.time).toLocaleString();
                 const place = submission.place;
@@ -233,8 +258,7 @@ async function getAllSubmissions(){
     // sort all submissions by time
     allSubmissions.sort((a, b) => b.time - a.time);
 
-    // clear the submissions table body
-    document.getElementById('allSubmissionsBody').innerHTML = '';
+    clearDataTable('#allSubmissionsTable');
 
     // display all submissions
     allSubmissions.forEach((submission) => {
@@ -265,12 +289,15 @@ async function getAllSubmissions(){
 }
 
 var datePicker;
-function initDataTable(tableId, dateColumnIndex = 1){
-    // Check if DataTable is already initialized
+
+function clearDataTable(tableId){
     if ($.fn.DataTable.isDataTable(tableId)) {
         $(tableId).DataTable().destroy();
     }
+    $(tableId + ' tbody').empty();
+}
 
+function initDataTable(tableId, dateColumnIndex = 1){
     $(tableId).DataTable({
         "createdRow": function(row, data) {
             var date = new Date(data[dateColumnIndex]);
@@ -290,7 +317,6 @@ function initDataTable(tableId, dateColumnIndex = 1){
     dateInput.id = 'dateSearch';
     dateInput.type = 'search';
     dateInput.placeholder = 'Search by date';
-    // searchInput.classList.add('form-control', 'form-control-sm');
     dateInput.addEventListener('input', () => {
         const table = $(tableId).DataTable();
         table.column(dateColumnIndex).search(dateInput.value).draw();
@@ -309,15 +335,7 @@ function initDataTable(tableId, dateColumnIndex = 1){
 
     datePicker = flatpickr("#dateSearch", {
         enableTime: false,
-        dateFormat: "n/j/Y",
-        // onChange: function(selectedDates, dateStr, instance) {
-        //     const inputs = Array.from(document.getElementsByTagName('input'));
-        //     let searchInput = inputs.find(input => input.type === 'search');
-        //     if (searchInput) {
-        //         searchInput.value = dateStr;
-        //         searchInput.dispatchEvent(new Event('input'));
-        //     }
-        // },
+        dateFormat: "n/j/Y"
     });
 }
 
