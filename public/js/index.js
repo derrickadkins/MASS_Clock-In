@@ -43,7 +43,7 @@ document.getElementById('googleSignIn').addEventListener('click', () => {
 
 document.getElementById('logout').addEventListener('click', () => {
     auth.signOut().then(() => {
-        console.log('Signed out successfully!');
+        // console.log('Signed out successfully!');
     }).catch((error) => {
         console.log(error);
     });
@@ -60,7 +60,7 @@ async function applyUser(user) {
             email: user.email,
             name: user.displayName
         }, { merge: true }).then(() => {
-            console.log('Document successfully updated!');
+            // console.log('Document successfully updated!');
         }).catch((error) => {
             console.error('Error updating document: ', error);
         });
@@ -95,7 +95,7 @@ async function applyUser(user) {
                 }
                 document.getElementById('submissionsTableContainer').hidden = false;
             } else {
-                console.log("No such document!");
+                // console.log("No such document!");
             }
         } catch (error) {
             console.log("Error getting document:", error);
@@ -140,7 +140,7 @@ async function clockIn(position) {
     await setDoc(docRef, {
         submissions: arrayUnion(newSubmission)
     }, { merge: true }).then(() => {
-        console.log('Document successfully updated!');
+        // console.log('Document successfully updated!');
     }).catch((error) => {
         console.error('Error updating document: ', error);
     });
@@ -229,7 +229,7 @@ function getUserSubmissions(user){
             initDataTable('#userSubmissionsTable', 0);
         } else {
             // doc.data() will be undefined in this case
-            console.log("No such document!");
+            // console.log("No such document!");
             document.getElementById('userSubmissionsBody').innerHTML = 'No submissions found';
         }
     }).catch((error) => {
