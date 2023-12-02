@@ -264,6 +264,7 @@ async function getAllSubmissions(){
     initDataTable('#allSubmissionsTable');
 }
 
+var datePicker;
 function initDataTable(tableId, dateColumnIndex = 1){
     // Check if DataTable is already initialized
     if ($.fn.DataTable.isDataTable(tableId)) {
@@ -283,6 +284,41 @@ function initDataTable(tableId, dateColumnIndex = 1){
         ],
         "order": [[ dateColumnIndex, "desc" ]],
     });
+
+    // Add search input for date column
+    const dateInput = document.createElement('input');
+    dateInput.id = 'dateSearch';
+    dateInput.type = 'search';
+    dateInput.placeholder = 'Search by date';
+    // searchInput.classList.add('form-control', 'form-control-sm');
+    dateInput.addEventListener('input', () => {
+        const table = $(tableId).DataTable();
+        table.column(dateColumnIndex).search(dateInput.value).draw();
+    });
+    
+    document.querySelector(`${tableId}_filter`).appendChild(dateInput);
+
+    // add <i id="datePickerButton" class="fas fa-calendar-alt"></i> to dateInput
+    const datePickerButton = document.createElement('i');
+    datePickerButton.id = 'datePickerButton';
+    datePickerButton.classList.add('fas', 'fa-calendar-alt');
+    datePickerButton.addEventListener('click', () => {
+        if(datePicker) datePicker.open();
+    });
+    dateInput.after(datePickerButton);
+
+    datePicker = flatpickr("#dateSearch", {
+        enableTime: false,
+        dateFormat: "n/j/Y",
+        // onChange: function(selectedDates, dateStr, instance) {
+        //     const inputs = Array.from(document.getElementsByTagName('input'));
+        //     let searchInput = inputs.find(input => input.type === 'search');
+        //     if (searchInput) {
+        //         searchInput.value = dateStr;
+        //         searchInput.dispatchEvent(new Event('input'));
+        //     }
+        // },
+    });
 }
 
 function initMap() {
@@ -292,21 +328,3 @@ function initMap() {
     }
     var map = new google.maps.Map(document.getElementById('map'), options);
 }
-
-var picker = new Pikaday({
-    field: document.getElementById('datePicker'),
-    format: 'D/M/YYYY',
-    onSelect: function() {
-        var selectedDate = this.getDate();
-        const inputs = Array.from(document.getElementsByTagName('input'));
-        let searchInput = inputs.find(input => input.type === 'search');
-        if (searchInput) {
-            searchInput.value = selectedDate.toLocaleDateString();
-            searchInput.dispatchEvent(new Event('input'));
-        }
-    }
-});
-
-document.getElementById('datePickerButton').addEventListener('click', function() {
-    picker.show();
-});
