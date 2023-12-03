@@ -72,9 +72,6 @@ async function applyUser(user) {
         document.getElementById('logout').hidden = false;
         document.getElementById('googleSignIn').hidden = true;
 
-        // show clock in button
-        document.getElementById('clockIn').hidden = false;
-
         // Get admins document from users collection
         const adminsRef = doc(db, 'users', 'admins');
         try {
@@ -93,24 +90,18 @@ async function applyUser(user) {
                     auth.currentUser.isAdmin = false;
                     getUserSubmissions(user);
                 }
-                document.getElementById('submissionsTableContainer').hidden = false;
             } else {
                 // console.log("No such document!");
             }
         } catch (error) {
             console.log("Error getting document:", error);
         }
+
+        document.getElementById('signedInUserContent').hidden = false;
     } else {
         document.getElementById('user').innerHTML = '';
 
-        // hide clock in button
-        document.getElementById('clockIn').hidden = true;
-
-        // hide submissions tables
-        document.getElementById('submissionsTableContainer').hidden = true;
-
-        // clear the submissions table body
-        document.getElementById('allSubmissionsBody').innerHTML = '';
+        document.getElementById('signedInUserContent').hidden = true;
 
         // Show login button
         document.getElementById('googleSignIn').hidden = false;
