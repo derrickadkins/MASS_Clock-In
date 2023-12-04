@@ -102,21 +102,14 @@ async function applyUser(user) {
           auth.currentUser.isAdmin = true;
           getAllSubmissions().then(() => {
             const today = new Date();
-            console.log("today", today);
             submissions
               .filter((submission) => {
                 return submission.email === user.email;
               })
               .forEach((submission) => {
                 const date = new Date(submission.time);
-                console.log("date", date);
-                if (
-                  date.getDate() === today.getDate() &&
-                  date.getMonth() === today.getMonth() &&
-                  date.getFullYear() === today.getFullYear()
-                ) {
-                  console.log("already clocked in");
-                  document.getElementById("clockIn").disabled = true;
+                if (isSameDay(date, today)) {
+                  showClockedIn();
                 }
               });
           });
@@ -129,14 +122,8 @@ async function applyUser(user) {
             console.log("today", today);
             submissions.forEach((submission) => {
               const date = new Date(submission.time);
-              console.log("date", date);
-              if (
-                date.getDate() === today.getDate() &&
-                date.getMonth() === today.getMonth() &&
-                date.getFullYear() === today.getFullYear()
-              ) {
-                console.log("already clocked in");
-                document.getElementById("clockIn").disabled = true;
+              if (isSameDay(date, today)) {
+                showClockedIn();
               }
             });
           });
@@ -230,7 +217,7 @@ async function clockIn(position) {
     getUserSubmissions(auth.currentUser);
   }
 
-  document.getElementById("clockIn").disabled = false;
+  showClockedIn();
 }
 
 const response = document.getElementById("response");
@@ -417,6 +404,21 @@ function initDataTable(tableId, dateColumnIndex = 1) {
     enableTime: false,
     dateFormat: "n/j/Y",
   });
+}
+
+function isSameDay(date1, date2) {
+  return (
+    date1.getDate() === date2.getDate() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getFullYear() === date2.getFullYear()
+  );
+}
+
+function showClockedIn() {
+  document.getElementById("clockIn").hidden = true;
+  const msg = document.getElementById("clockedInMessage");
+  msg.innerHTML = `You have clocked in today.`;
+  msg.classList.add("pt-3");
 }
 
 function initMap() {
