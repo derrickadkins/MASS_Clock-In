@@ -64,13 +64,6 @@ async function applyUser(user) {
         }).catch((error) => {
             console.error('Error updating document: ', error);
         });
-        
-        // Show user info
-        document.getElementById('user').innerHTML = `Signed in as ${user.displayName}<br><a href="https://www.gmail.com" target="_blank">${user.email}</a>`;
-
-        // Show logout button
-        document.getElementById('logout').hidden = false;
-        document.getElementById('googleSignIn').hidden = true;
 
         // Get admins document from users collection
         const adminsRef = doc(db, 'users', 'admins');
@@ -97,15 +90,28 @@ async function applyUser(user) {
             console.log("Error getting document:", error);
         }
 
-        document.getElementById('signedInUserContent').hidden = false;
+        document.getElementById('user').innerHTML = `Signed in as ${user.displayName}<br><a href="https://www.gmail.com" target="_blank">${user.email}</a>`;
+
+        Array.from(document.getElementsByClassName('signedInUserContent')).forEach(function(element){
+            element.hidden = false;
+        });
+
+        Array.from(document.getElementsByClassName('signedOutUserContent')).forEach(function(element){
+            element.hidden = true;
+        });
     } else {
         document.getElementById('user').innerHTML = '';
 
-        document.getElementById('signedInUserContent').hidden = true;
+        clearDataTable('#userSubmissionsTable');
+        clearDataTable('#allSubmissionsTable');
 
-        // Show login button
-        document.getElementById('googleSignIn').hidden = false;
-        document.getElementById('logout').hidden = true;
+        Array.from(document.getElementsByClassName('signedInUserContent')).forEach(function(element){
+            element.hidden = true;
+        });
+        
+        Array.from(document.getElementsByClassName('signedOutUserContent')).forEach(function(element){
+            element.hidden = false;
+        });
     }
 }
 

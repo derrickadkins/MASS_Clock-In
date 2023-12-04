@@ -22,19 +22,16 @@
         <div class="mx-auto text-center font-weight-bold">
             MASS Clock-In
         </div>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler signedInUserContent" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" hidden>
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
+        <div class="collapse navbar-collapse signedInUserContent" id="navbarNav" hidden>
             <ul class="navbar-nav ml-auto pr-lg-3">
                 <li class="nav-item ml-auto">
                     <p id="user" class="text-right"></p>
                 </li>
                 <li class="nav-item ml-auto pr-lg-3">
-                    <button id="googleSignIn" class="btn btn-primary">Sign in with Google</button>
-                </li>
-                <li class="nav-item ml-auto pr-lg-3">
-                    <button id="logout" class="btn btn-danger" hidden>Sign Out</button>
+                    <button id="logout" class="btn btn-danger">Sign Out</button>
                 </li>
             </ul>
         </div>
@@ -44,7 +41,16 @@
         <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
 
-    <div id="signedInUserContent" hidden>
+    <div class="signedOutUserContent">
+        <div class="container pt-3 d-flex justify-content-center">
+            Please sign in to clock-in.
+        </div>
+        <div class="container pt-3 d-flex justify-content-center">
+            <button id="googleSignIn" class="btn btn-primary">Sign in with Google</button>
+        </div>
+    </div>
+
+    <div class="signedInUserContent" hidden>
         <div class="container pt-3 d-flex justify-content-center">
             <button id="clockIn" class="btn btn-success p-3">Clock-In</button>
         </div>
