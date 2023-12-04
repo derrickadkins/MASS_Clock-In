@@ -200,17 +200,12 @@ async function clockIn(position) {
       submissions: arrayUnion(newSubmission),
     },
     { merge: true }
-  )
-    .then(() => {
-      // console.log('Document successfully updated!');
-    })
-    .catch((error) => {
-      console.error("Error updating document: ", error);
-    });
+  ).catch((error) => {
+    console.error("Error updating document: ", error);
+  });
 
   showSuccess("Clock in successful!");
 
-  // refresh clock ins
   if (auth.currentUser.isAdmin) {
     getAllSubmissions();
   } else {
@@ -277,9 +272,7 @@ async function getUserSubmissions(user) {
       const time = new Date(submission.time).toLocaleString();
       const place = submission.place;
       const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
-      // create a table row
       let row = document.createElement("tr");
-      // create table data for the time and place
       let timeData = document.createElement("td");
       timeData.textContent = time;
       let placeData = document.createElement("td");
@@ -288,26 +281,19 @@ async function getUserSubmissions(user) {
       placeLink.target = "_blank";
       placeLink.textContent = `${place.latitude}, ${place.longitude}`;
       placeData.appendChild(placeLink);
-      // append the table data to the table row
       row.appendChild(timeData);
       row.appendChild(placeData);
-      // append the table row to the submissions table body
       document.getElementById("userSubmissionsBody").appendChild(row);
     });
     initDataTable("#userSubmissionsTable", 0);
   } else {
-    // doc.data() will be undefined in this case
-    // console.log("No such document!");
     document.getElementById("userSubmissionsBody").innerHTML =
       "No submissions found";
   }
 }
 
 async function getAllSubmissions() {
-  // clear submissions array
   submissions = [];
-
-  // get every document from the submissions collection
   const submissionsRef = collection(db, "submissions");
   const querySnapshot = await getDocs(submissionsRef);
   querySnapshot.docs.forEach((doc) => {
@@ -321,20 +307,16 @@ async function getAllSubmissions() {
     });
   });
 
-  // sort all submissions by time
   submissions.sort((a, b) => b.time - a.time);
 
   clearDataTable("#allSubmissionsTable");
   clearDataTable("#userSubmissionsTable");
 
-  // display all submissions
   submissions.forEach((submission) => {
     const time = new Date(submission.time).toLocaleString();
     const place = submission.place;
     const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
-    // create a table row
     let row = document.createElement("tr");
-    // create table data for the user's name, time, and place
     let nameData = document.createElement("td");
     nameData.textContent = submission.userName;
     let timeData = document.createElement("td");
@@ -345,11 +327,9 @@ async function getAllSubmissions() {
     placeLink.target = "_blank";
     placeLink.textContent = `${place.latitude}, ${place.longitude}`;
     placeData.appendChild(placeLink);
-    // append the table data to the table row
     row.appendChild(nameData);
     row.appendChild(timeData);
     row.appendChild(placeData);
-    // append the table row to the submissions table body
     document.getElementById("allSubmissionsBody").appendChild(row);
   });
   initDataTable("#allSubmissionsTable");
@@ -379,7 +359,6 @@ function initDataTable(tableId, dateColumnIndex = 1) {
     order: [[dateColumnIndex, "desc"]],
   });
 
-  // Add search input for date column
   const dateInput = document.createElement("input");
   dateInput.id = "dateSearch";
   dateInput.type = "search";
@@ -391,7 +370,6 @@ function initDataTable(tableId, dateColumnIndex = 1) {
 
   document.querySelector(`${tableId}_filter`).appendChild(dateInput);
 
-  // add <i id="datePickerButton" class="fas fa-calendar-alt"></i> to dateInput
   const datePickerButton = document.createElement("i");
   datePickerButton.id = "datePickerButton";
   datePickerButton.classList.add("fas", "fa-calendar-alt");
