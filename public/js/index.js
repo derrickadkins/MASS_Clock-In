@@ -116,10 +116,12 @@ async function applyUser(user) {
 }
 
 document.getElementById('clockIn').addEventListener('click', () => {
+    document.getElementById('clockIn').disabled = true;
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(clockIn, showError);
     } else { 
         showError("Geolocation is not supported by this browser.");
+        document.getElementById('clockIn').disabled = false;
     }
 });
 
@@ -150,6 +152,8 @@ async function clockIn(position) {
     }else{
         getUserSubmissions(auth.currentUser);
     }
+
+    document.getElementById('clockIn').disabled = false;
 }
 
 const response = document.getElementById("response");
@@ -187,6 +191,8 @@ function showError(error) {
     response.classList.remove('alert-success');
     response.classList.add('alert-danger');
     response.hidden = false;
+
+    document.getElementById('clockIn').disabled = false;
 }
 
 function clearResponse() {
