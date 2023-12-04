@@ -1,94 +1,139 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>MASS Clock-In</title>
-    <link rel="icon" href="img/MidAmericaLogo.png" type="image/x-icon">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="MidAmerica Safety Solutions Clock-In">
-    <meta name="keywords" content="MidAmerica Safety Solutions, MASS, Clock-In">
-    <meta name="author" content="MidAmerica Safety Solutions">
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="css/index.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
-</head>
-<body>
+    <link rel="icon" href="img/MidAmericaLogo.png" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="MidAmerica Safety Solutions Clock-In" />
+    <meta
+      name="keywords"
+      content="MidAmerica Safety Solutions, MASS, Clock-In"
+    />
+    <meta name="author" content="MidAmerica Safety Solutions" />
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="css/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css"
+    />
+  </head>
+  <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="https://www.jotform.com/app/222897113963161" target="_blank">
-            <img src="img/MidAmericaLogo.png" width="150" height="50" class="d-inline-block align-top" alt="MidAmerica Safety Solutions Logo">
-        </a>
-        <div class="mx-auto text-center font-weight-bold">
-            MASS Clock-In
-        </div>
-        <button class="navbar-toggler signedInUserContent" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation" hidden>
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse signedInUserContent" id="navbarNav" hidden>
-            <ul class="navbar-nav ml-auto pr-lg-3">
-                <li class="nav-item ml-auto">
-                    <p id="user" class="text-right"></p>
-                </li>
-                <li class="nav-item ml-auto pr-lg-3">
-                    <button id="logout" class="btn btn-danger">Sign Out</button>
-                </li>
-            </ul>
-        </div>
+      <a
+        class="navbar-brand"
+        href="https://www.jotform.com/app/222897113963161"
+        target="_blank"
+      >
+        <img
+          src="img/MidAmericaLogo.png"
+          width="150"
+          height="50"
+          class="d-inline-block align-top"
+          alt="MidAmerica Safety Solutions Logo"
+        />
+      </a>
+      <div class="mx-auto text-center font-weight-bold">MASS Clock-In</div>
+      <button
+        class="navbar-toggler signedInUserContent"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNav"
+        aria-controls="navbarNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        hidden
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div
+        class="collapse navbar-collapse signedInUserContent"
+        id="navbarNav"
+        hidden
+      >
+        <ul class="navbar-nav ml-auto pr-lg-3">
+          <li class="nav-item ml-auto">
+            <p id="user" class="text-right"></p>
+          </li>
+          <li class="nav-item ml-auto pr-lg-3">
+            <button id="logout" class="btn btn-danger">Sign Out</button>
+          </li>
+        </ul>
+      </div>
     </nav>
 
-    <div id="response" class="alert alert-success text-center alert-dismissible" hidden>
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <div
+      id="response"
+      class="alert alert-success text-center alert-dismissible"
+      hidden
+    >
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
     </div>
 
     <div class="signedOutUserContent">
-        <div class="container pt-3 d-flex justify-content-center">
-            Please sign in to clock-in.
-        </div>
-        <div class="container pt-3 d-flex justify-content-center">
-            <button id="googleSignIn" class="btn btn-primary">Sign in with Google</button>
-        </div>
+      <div class="container pt-3 d-flex justify-content-center">
+        Please sign in to clock-in.
+      </div>
+      <div class="container pt-3 d-flex justify-content-center">
+        <button id="googleSignIn" class="btn btn-primary">
+          Sign in with Google
+        </button>
+      </div>
     </div>
 
     <div class="signedInUserContent" hidden>
-        <div class="container pt-3 d-flex justify-content-center">
-            <button id="clockIn" class="btn btn-success p-3">Clock-In</button>
-        </div>
+      <div class="container pt-3 d-flex justify-content-center">
+        <button id="clockIn" class="btn btn-success p-3">Clock-In</button>
+      </div>
 
-        <hr class="my-4">
+      <hr class="my-4" />
 
-        <div id="submissionsTableContainer" class="container pt-3">
-            <table class="table-striped" id="allSubmissionsTable">
-                <thead>
-                    <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Time</th>
-                        <th scope="col">Place</th>
-                    </tr>
-                </thead>
-                <tbody id="allSubmissionsBody">
-                </tbody>
-            </table>
-            <table class="table-striped" id="userSubmissionsTable">
-                <thead>
-                    <tr>
-                        <th scope="col">Time</th>
-                        <th scope="col">Place</th>
-                    </tr>
-                </thead>
-                <tbody id="userSubmissionsBody">
-                </tbody>
-            </table>
-        </div>
-        <!-- <div id="map" style="height: 400px; width: 100%;"></div> -->
+      <div id="submissionsTableContainer" class="container pt-3">
+        <table class="table-striped" id="allSubmissionsTable">
+          <thead>
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">Time</th>
+              <th scope="col">Place</th>
+            </tr>
+          </thead>
+          <tbody id="allSubmissionsBody"></tbody>
+        </table>
+        <table class="table-striped" id="userSubmissionsTable">
+          <thead>
+            <tr>
+              <th scope="col">Time</th>
+              <th scope="col">Place</th>
+            </tr>
+          </thead>
+          <tbody id="userSubmissionsBody"></tbody>
+        </table>
+      </div>
+      <!-- <div id="map" style="height: 400px; width: 100%;"></div> -->
     </div>
 
     <script type="module" src="js/index.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script
+      type="text/javascript"
+      charset="utf8"
+      src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"
+    ></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap"></script> -->
-</body>
+  </body>
 </html>
