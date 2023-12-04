@@ -58,17 +58,19 @@
       >
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div
-        class="collapse navbar-collapse signedInUserContent"
-        id="navbarNav"
-        hidden
-      >
-        <ul class="navbar-nav ml-auto pr-lg-3">
-          <li class="nav-item ml-auto">
-            <p id="user" class="text-right"></p>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item ml-auto pr-lg-3 pb-lg-0 pb-3">
+            <div id="user" class="text-right signedInUserContent" hidden></div>
           </li>
-          <li class="nav-item ml-auto pr-lg-3">
-            <button id="logout" class="btn btn-danger">Sign Out</button>
+          <li class="nav-item ml-auto">
+            <button
+              id="logout"
+              class="btn btn-danger signedInUserContent"
+              hidden
+            >
+              Sign Out
+            </button>
           </li>
         </ul>
       </div>

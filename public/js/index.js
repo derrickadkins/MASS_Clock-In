@@ -124,20 +124,21 @@ async function applyUser(user) {
           document.getElementById("allSubmissionsTable").hidden = true;
           document.getElementById("userSubmissionsTable").hidden = false;
           auth.currentUser.isAdmin = false;
-          getUserSubmissions(user);
-          const today = new Date();
-          console.log("today", today);
-          submissions.forEach((submission) => {
-            const date = new Date(submission.time);
-            console.log("date", date);
-            if (
-              date.getDate() === today.getDate() &&
-              date.getMonth() === today.getMonth() &&
-              date.getFullYear() === today.getFullYear()
-            ) {
-              console.log("already clocked in");
-              document.getElementById("clockIn").disabled = true;
-            }
+          getUserSubmissions(user).then(() => {
+            const today = new Date();
+            console.log("today", today);
+            submissions.forEach((submission) => {
+              const date = new Date(submission.time);
+              console.log("date", date);
+              if (
+                date.getDate() === today.getDate() &&
+                date.getMonth() === today.getMonth() &&
+                date.getFullYear() === today.getFullYear()
+              ) {
+                console.log("already clocked in");
+                document.getElementById("clockIn").disabled = true;
+              }
+            });
           });
         }
       } else {
@@ -279,9 +280,9 @@ function clearResponse() {
 
 async function getUserSubmissions(user) {
   const docRef = doc(db, "submissions", user.uid);
-  const doc = await getDoc(docRef);
-  if (doc.exists()) {
-    submissions = doc.data().submissions;
+  const submissionDoc = await getDoc(docRef);
+  if (submissionDoc.exists()) {
+    submissions = submissionDoc.data().submissions;
     submissions.sort((a, b) => b.time - a.time);
     clearDataTable("#userSubmissionsTable");
     clearDataTable("#allSubmissionsTable");
