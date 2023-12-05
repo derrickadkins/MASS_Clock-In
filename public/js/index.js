@@ -78,6 +78,9 @@ async function applyUser(user) {
       { merge: true }
     );
 
+    // default user to not admin
+    auth.currentUser.isAdmin = false;
+
     // Get admins document from users collection
     const adminsRef = doc(db, "users", "admins");
     try {
@@ -86,47 +89,49 @@ async function applyUser(user) {
       if (docSnap.exists()) {
         // Check if user is admin
         if (docSnap.data().emails.includes(user.email)) {
-          document.getElementById("allSubmissionsTable").hidden = false;
-          document.getElementById("userSubmissionsTable").hidden = true;
           auth.currentUser.isAdmin = true;
-          getAllSubmissions().then(() => {
-            const today = new Date();
-            submissions
-              .filter((submission) => {
-                return submission.email === user.email;
-              })
-              .forEach((submission) => {
-                const date = new Date(submission.time);
-                if (isSameDay(date, today)) {
-                  showClockedIn();
-                }
-              });
-          });
-        } else {
-          document.getElementById("allSubmissionsTable").hidden = true;
-          document.getElementById("userSubmissionsTable").hidden = false;
-          auth.currentUser.isAdmin = false;
-          getUserSubmissions(user).then(() => {
-            const today = new Date();
-            console.log("today", today);
-            submissions.forEach((submission) => {
-              const date = new Date(submission.time);
-              if (isSameDay(date, today)) {
-                showClockedIn();
-              }
-            });
-          });
         }
-      } else {
-        // console.log("No such document!");
       }
     } catch (error) {
       console.log("Error getting document:", error);
     }
 
+    document.getElementById("allSubmissionsTable").hidden =
+      !auth.currentUser.isAdmin;
+    document.getElementById("userSubmissionsTable").hidden =
+      auth.currentUser.isAdmin;
+
+    if (auth.currentUser.isAdmin) {
+      getAllSubmissions().then(() => {
+        const today = new Date();
+        submissions
+          .filter((submission) => {
+            return submission.email === user.email;
+          })
+          .forEach((submission) => {
+            const date = new Date(submission.time);
+            if (isSameDay(date, today)) {
+              showClockedIn();
+            }
+          });
+      });
+    } else {
+      getUserSubmissions(user).then(() => {
+        const today = new Date();
+        submissions.forEach((submission) => {
+          const date = new Date(submission.time);
+          if (isSameDay(date, today)) {
+            showClockedIn();
+          }
+        });
+      });
+    }
+
     document.getElementById(
       "user"
     ).innerHTML = `Signed in as ${user.displayName}<br><a href="https://www.gmail.com" target="_blank">${user.email}</a>`;
+
+    document.getElementById("response").hidden = true;
 
     Array.from(document.getElementsByClassName("signedInUserContent")).forEach(
       function (element) {
@@ -140,6 +145,7 @@ async function applyUser(user) {
       }
     );
   } else {
+    // user is signed out
     document.getElementById("user").innerHTML = "";
 
     clearDataTable("#userSubmissionsTable");

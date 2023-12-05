@@ -76,14 +76,6 @@
       </div>
     </nav>
 
-    <div
-      id="response"
-      class="alert alert-success text-center alert-dismissible"
-      hidden
-    >
-      <button type="button" class="close" data-dismiss="alert">&times;</button>
-    </div>
-
     <div class="signedOutUserContent">
       <div class="container pt-3 d-flex justify-content-center">
         Please sign in to clock-in.
@@ -96,6 +88,15 @@
     </div>
 
     <div class="signedInUserContent" hidden>
+      <div
+        id="response"
+        class="alert alert-success text-center alert-dismissible"
+        hidden
+      >
+        <button type="button" class="close" data-dismiss="alert">
+          &times;
+        </button>
+      </div>
       <div
         id="clockedInMessage"
         class="container d-flex justify-content-center"
