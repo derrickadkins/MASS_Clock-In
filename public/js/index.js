@@ -57,14 +57,9 @@ document.getElementById("googleSignIn").addEventListener("click", () => {
 });
 
 document.getElementById("logout").addEventListener("click", () => {
-  auth
-    .signOut()
-    .then(() => {
-      // console.log('Signed out successfully!');
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+  auth.signOut().catch((error) => {
+    showError(error);
+  });
 });
 
 async function applyUser(user) {
@@ -81,13 +76,7 @@ async function applyUser(user) {
         name: user.displayName,
       },
       { merge: true }
-    )
-      .then(() => {
-        // console.log('Document successfully updated!');
-      })
-      .catch((error) => {
-        console.error("Error updating document: ", error);
-      });
+    );
 
     // Get admins document from users collection
     const adminsRef = doc(db, "users", "admins");
@@ -279,7 +268,9 @@ async function getUserSubmissions(user) {
       let placeLink = document.createElement("a");
       placeLink.href = link;
       placeLink.target = "_blank";
-      placeLink.textContent = `${place.latitude}, ${place.longitude}`;
+      placeLink.textContent = `${place.latitude.toFixed(
+        2
+      )}, ${place.longitude.toFixed(2)}`;
       placeData.appendChild(placeLink);
       row.appendChild(timeData);
       row.appendChild(placeData);
@@ -325,7 +316,9 @@ async function getAllSubmissions() {
     let placeLink = document.createElement("a");
     placeLink.href = link;
     placeLink.target = "_blank";
-    placeLink.textContent = `${place.latitude}, ${place.longitude}`;
+    placeLink.textContent = `${place.latitude.toFixed(
+      2
+    )}, ${place.longitude.toFixed(2)}`;
     placeData.appendChild(placeLink);
     row.appendChild(nameData);
     row.appendChild(timeData);
