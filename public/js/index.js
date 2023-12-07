@@ -113,6 +113,15 @@ async function applyUser(user) {
             if (isSameDay(date, today)) {
               showClockedIn();
             }
+
+            var marker = new google.maps.Marker({
+              position: {
+                lat: submission.place.latitude,
+                lng: submission.place.longitude,
+              },
+              map: map,
+              title: submission.userName,
+            });
           });
       });
     } else {
@@ -123,6 +132,15 @@ async function applyUser(user) {
           if (isSameDay(date, today)) {
             showClockedIn();
           }
+
+          var marker = new google.maps.Marker({
+            position: {
+              lat: submission.place.latitude,
+              lng: submission.place.longitude,
+            },
+            map: map,
+            title: submission.userName,
+          });
         });
       });
     }
