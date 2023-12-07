@@ -125,6 +125,14 @@ async function applyUser(user) {
                 `\n` +
                 new Date(submission.time).toLocaleString(),
             });
+
+            const infowindow = new google.maps.InfoWindow({
+              content: marker.title,
+            });
+
+            marker.addListener("click", function () {
+              infowindow.open(map, marker);
+            });
           });
       });
     } else {
@@ -143,6 +151,14 @@ async function applyUser(user) {
             },
             map: map,
             title: new Date(submission.time).toLocaleString(),
+          });
+
+          const infowindow = new google.maps.InfoWindow({
+            content: marker.title,
+          });
+
+          marker.addListener("click", function () {
+            infowindow.open(map, marker);
           });
         });
       });
