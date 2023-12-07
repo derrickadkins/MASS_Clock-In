@@ -30,6 +30,7 @@ const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 const db = getFirestore(app);
 let submissions = [];
+let markers = [];
 
 document.addEventListener("DOMContentLoaded", () => {
   applyUser(auth.currentUser);
@@ -113,26 +114,6 @@ async function applyUser(user) {
             if (isSameDay(date, today)) {
               showClockedIn();
             }
-
-            var marker = new google.maps.Marker({
-              position: {
-                lat: submission.place.latitude,
-                lng: submission.place.longitude,
-              },
-              map: map,
-              title:
-                submission.userName +
-                `\n` +
-                new Date(submission.time).toLocaleString(),
-            });
-
-            const infowindow = new google.maps.InfoWindow({
-              content: marker.title,
-            });
-
-            marker.addListener("click", function () {
-              infowindow.open(map, marker);
-            });
           });
       });
     } else {
@@ -143,23 +124,6 @@ async function applyUser(user) {
           if (isSameDay(date, today)) {
             showClockedIn();
           }
-
-          var marker = new google.maps.Marker({
-            position: {
-              lat: submission.place.latitude,
-              lng: submission.place.longitude,
-            },
-            map: map,
-            title: new Date(submission.time).toLocaleString(),
-          });
-
-          const infowindow = new google.maps.InfoWindow({
-            content: marker.title,
-          });
-
-          marker.addListener("click", function () {
-            infowindow.open(map, marker);
-          });
         });
       });
     }
@@ -297,20 +261,22 @@ async function getUserSubmissions(user) {
   const submissionDoc = await getDoc(docRef);
   if (submissionDoc.exists()) {
     submissions = submissionDoc.data().submissions;
-    submissions.sort((a, b) => b.time - a.time);
     clearDataTable("#userSubmissionsTable");
     clearDataTable("#allSubmissionsTable");
     submissions.forEach((submission) => {
+      addMarker(submission);
+
       const time = new Date(submission.time).toLocaleString();
       const place = submission.place;
-      const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
       let row = document.createElement("tr");
       let timeData = document.createElement("td");
       timeData.textContent = time;
       let placeData = document.createElement("td");
       let placeLink = document.createElement("a");
-      placeLink.href = link;
-      placeLink.target = "_blank";
+      placeLink.href = `#map`;
+      placeLink.addEventListener("click", () => {
+        onPlaceLinkClick(submissions.indexOf(submission));
+      });
       placeLink.textContent = `${place.latitude.toFixed(
         2
       )}, ${place.longitude.toFixed(2)}`;
@@ -342,15 +308,14 @@ async function getAllSubmissions() {
     });
   });
 
-  submissions.sort((a, b) => b.time - a.time);
-
   clearDataTable("#allSubmissionsTable");
   clearDataTable("#userSubmissionsTable");
 
   submissions.forEach((submission) => {
+    addMarker(submission);
+
     const time = new Date(submission.time).toLocaleString();
     const place = submission.place;
-    const link = `https://www.google.com/maps/search/?api=1&query=${place.latitude},${place.longitude}`;
     let row = document.createElement("tr");
     let nameData = document.createElement("td");
     nameData.textContent = submission.userName;
@@ -358,8 +323,10 @@ async function getAllSubmissions() {
     timeData.textContent = time;
     let placeData = document.createElement("td");
     let placeLink = document.createElement("a");
-    placeLink.href = link;
-    placeLink.target = "_blank";
+    placeLink.href = `#map`;
+    placeLink.addEventListener("click", () => {
+      onPlaceLinkClick(submissions.indexOf(submission));
+    });
     placeLink.textContent = `${place.latitude.toFixed(
       2
     )}, ${place.longitude.toFixed(2)}`;
@@ -369,7 +336,31 @@ async function getAllSubmissions() {
     row.appendChild(placeData);
     document.getElementById("allSubmissionsBody").appendChild(row);
   });
+
   initDataTable("#allSubmissionsTable");
+}
+
+function addMarker(submission) {
+  const time = new Date(submission.time).toLocaleString();
+  const title = submission.userName ? submission.userName + `\n` + time : time;
+  var marker = new google.maps.Marker({
+    position: {
+      lat: submission.place.latitude,
+      lng: submission.place.longitude,
+    },
+    map: map,
+    title: title,
+  });
+
+  const infowindow = new google.maps.InfoWindow({
+    content: marker.title,
+  });
+
+  marker.addListener("click", function () {
+    infowindow.open(map, marker);
+  });
+
+  markers.push({ marker, infowindow });
 }
 
 var datePicker;
@@ -434,4 +425,10 @@ function showClockedIn() {
   const msg = document.getElementById("clockedInMessage");
   msg.innerHTML = `You have clocked in today.`;
   msg.classList.add("pt-3");
+}
+
+function onPlaceLinkClick(index) {
+  const { marker, infowindow } = markers[index];
+  map.panTo(marker.getPosition());
+  infowindow.open(map, marker);
 }
