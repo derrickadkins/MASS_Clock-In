@@ -397,13 +397,3 @@ function showClockedIn() {
   msg.innerHTML = `You have clocked in today.`;
   msg.classList.add("pt-3");
 }
-
-export function initMap() {
-  var options = {
-    zoom: 11,
-    center: { lat: 39.103256, lng: -84.51197 }, // Coordinates for Cincinnati
-  };
-  var map = new google.maps.Map(document.getElementById("map"), options);
-}
-
-window.initMap = initMap;
