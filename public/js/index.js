@@ -398,10 +398,12 @@ function showClockedIn() {
   msg.classList.add("pt-3");
 }
 
-function initMap() {
+export function initMap() {
   var options = {
-    zoom: 8,
-    center: { lat: 40.7128, lng: -74.006 }, // Coordinates for New York City
+    zoom: 11,
+    center: { lat: 39.103256, lng: -84.51197 }, // Coordinates for Cincinnati
   };
   var map = new google.maps.Map(document.getElementById("map"), options);
 }
+
+window.initMap = initMap;
