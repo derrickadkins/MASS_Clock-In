@@ -265,25 +265,7 @@ async function getUserSubmissions(user) {
     clearDataTable("#allSubmissionsTable");
     submissions.forEach((submission) => {
       addMarker(submission);
-
-      const time = new Date(submission.time).toLocaleString();
-      const place = submission.place;
-      let row = document.createElement("tr");
-      let timeData = document.createElement("td");
-      timeData.textContent = time;
-      let placeData = document.createElement("td");
-      let placeLink = document.createElement("a");
-      placeLink.href = `#map`;
-      placeLink.addEventListener("click", () => {
-        onPlaceLinkClick(submissions.indexOf(submission));
-      });
-      placeLink.textContent = `${place.latitude.toFixed(
-        2
-      )}, ${place.longitude.toFixed(2)}`;
-      placeData.appendChild(placeLink);
-      row.appendChild(timeData);
-      row.appendChild(placeData);
-      document.getElementById("userSubmissionsBody").appendChild(row);
+      addSubmissionRow(submission);
     });
     initDataTable("#userSubmissionsTable", 0);
   } else {
@@ -313,31 +295,42 @@ async function getAllSubmissions() {
 
   submissions.forEach((submission) => {
     addMarker(submission);
-
-    const time = new Date(submission.time).toLocaleString();
-    const place = submission.place;
-    let row = document.createElement("tr");
-    let nameData = document.createElement("td");
-    nameData.textContent = submission.userName;
-    let timeData = document.createElement("td");
-    timeData.textContent = time;
-    let placeData = document.createElement("td");
-    let placeLink = document.createElement("a");
-    placeLink.href = `#map`;
-    placeLink.addEventListener("click", () => {
-      onPlaceLinkClick(submissions.indexOf(submission));
-    });
-    placeLink.textContent = `${place.latitude.toFixed(
-      2
-    )}, ${place.longitude.toFixed(2)}`;
-    placeData.appendChild(placeLink);
-    row.appendChild(nameData);
-    row.appendChild(timeData);
-    row.appendChild(placeData);
-    document.getElementById("allSubmissionsBody").appendChild(row);
+    addSubmissionRow(submission);
   });
 
   initDataTable("#allSubmissionsTable");
+}
+
+function addSubmissionRow(submission) {
+  let row = document.createElement("tr");
+  let tableBodyId = "userSubmissionsBody";
+
+  if (submission.userName) {
+    tableBodyId = "allSubmissionsBody";
+    let nameData = document.createElement("td");
+    nameData.textContent = submission.userName;
+    row.appendChild(nameData);
+  }
+
+  const time = new Date(submission.time).toLocaleString();
+  let timeData = document.createElement("td");
+  timeData.textContent = time;
+  row.appendChild(timeData);
+
+  const place = submission.place;
+  let placeData = document.createElement("td");
+  let placeLink = document.createElement("a");
+  placeLink.href = `#map`;
+  placeLink.addEventListener("click", () => {
+    onPlaceLinkClick(submissions.indexOf(submission));
+  });
+  placeLink.textContent = `${place.latitude.toFixed(
+    2
+  )}, ${place.longitude.toFixed(2)}`;
+  placeData.appendChild(placeLink);
+  row.appendChild(placeData);
+
+  document.getElementById(tableBodyId).appendChild(row);
 }
 
 function addMarker(submission) {
