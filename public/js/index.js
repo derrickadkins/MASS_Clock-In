@@ -120,7 +120,10 @@ async function applyUser(user) {
                 lng: submission.place.longitude,
               },
               map: map,
-              title: submission.userName,
+              title:
+                submission.userName +
+                `\n` +
+                new Date(submission.time).toLocaleString(),
             });
           });
       });
@@ -139,7 +142,7 @@ async function applyUser(user) {
               lng: submission.place.longitude,
             },
             map: map,
-            title: submission.userName,
+            title: new Date(submission.time).toLocaleString(),
           });
         });
       });
@@ -315,6 +318,7 @@ async function getAllSubmissions() {
     const userName = doc.data().name;
     const email = doc.data().email;
     let userSubmissions = doc.data().submissions;
+    if (!userSubmissions) return;
     userSubmissions.forEach((submission) => {
       submission.userName = userName;
       submission.email = email;
