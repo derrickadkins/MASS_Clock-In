@@ -41,20 +41,9 @@ auth.onAuthStateChanged((user) => {
 });
 
 document.getElementById("googleSignIn").addEventListener("click", () => {
-  signInWithPopup(auth, provider)
-    .then(async (result) => {
-      const user = result.user;
-      // if (user.email.includes('masscincy')) {
-      //     console.log('Signed in successfully!');
-      // } else {
-      //     console.log('Unauthorized email');
-      // }
-    })
-    .catch((error) => {
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      console.log(errorMessage);
-    });
+  signInWithPopup(auth, provider).catch((error) => {
+    showError(error.message);
+  });
 });
 
 document.getElementById("logout").addEventListener("click", () => {
@@ -118,17 +107,7 @@ async function applyUser(user) {
 
     document.getElementById("response").hidden = true;
 
-    Array.from(document.getElementsByClassName("signedInUserContent")).forEach(
-      function (element) {
-        element.hidden = false;
-      }
-    );
-
-    Array.from(document.getElementsByClassName("signedOutUserContent")).forEach(
-      function (element) {
-        element.hidden = true;
-      }
-    );
+    setUserContentVisibility(true);
   } else {
     // user is signed out
     document.getElementById("user").innerHTML = "";
@@ -136,18 +115,22 @@ async function applyUser(user) {
     clearDataTable("#userSubmissionsTable");
     clearDataTable("#allSubmissionsTable");
 
-    Array.from(document.getElementsByClassName("signedInUserContent")).forEach(
-      function (element) {
-        element.hidden = true;
-      }
-    );
-
-    Array.from(document.getElementsByClassName("signedOutUserContent")).forEach(
-      function (element) {
-        element.hidden = false;
-      }
-    );
+    setUserContentVisibility(false);
   }
+}
+
+function setUserContentVisibility(isSignedIn) {
+  Array.from(document.getElementsByClassName("signedInUserContent")).forEach(
+    function (element) {
+      element.hidden = !isSignedIn;
+    }
+  );
+
+  Array.from(document.getElementsByClassName("signedOutUserContent")).forEach(
+    function (element) {
+      element.hidden = isSignedIn;
+    }
+  );
 }
 
 document.getElementById("clockIn").addEventListener("click", () => {
