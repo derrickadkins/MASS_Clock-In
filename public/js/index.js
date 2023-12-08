@@ -104,27 +104,11 @@ async function applyUser(user) {
 
     if (auth.currentUser.isAdmin) {
       getAllSubmissions().then(() => {
-        const today = new Date();
-        submissions
-          .filter((submission) => {
-            return submission.email === user.email;
-          })
-          .forEach((submission) => {
-            const date = new Date(submission.time);
-            if (isSameDay(date, today)) {
-              showClockedIn();
-            }
-          });
+        checkIfClockedIn();
       });
     } else {
       getUserSubmissions(user).then(() => {
-        const today = new Date();
-        submissions.forEach((submission) => {
-          const date = new Date(submission.time);
-          if (isSameDay(date, today)) {
-            showClockedIn();
-          }
-        });
+        checkIfClockedIn();
       });
     }
 
@@ -175,6 +159,27 @@ document.getElementById("clockIn").addEventListener("click", () => {
     document.getElementById("clockIn").disabled = false;
   }
 });
+
+function checkIfClockedIn() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const userSubmissionsToday = submissions.filter((submission) => {
+    const submissionDate = new Date(submission.time);
+    submissionDate.setHours(0, 0, 0, 0);
+    if (auth.currentUser.isAdmin) {
+      return (
+        submission.email === auth.currentUser.email &&
+        submissionDate.getTime() === today.getTime()
+      );
+    } else {
+      return submissionDate.getTime() === today.getTime();
+    }
+  });
+
+  if (userSubmissionsToday.length > 0) {
+    showClockedIn();
+  }
+}
 
 async function clockIn(position) {
   // submit to firestore
@@ -403,14 +408,6 @@ function initDataTable(tableId, dateColumnIndex = 1) {
     enableTime: false,
     dateFormat: "n/j/Y",
   });
-}
-
-function isSameDay(date1, date2) {
-  return (
-    date1.getDate() === date2.getDate() &&
-    date1.getMonth() === date2.getMonth() &&
-    date1.getFullYear() === date2.getFullYear()
-  );
 }
 
 function showClockedIn() {
