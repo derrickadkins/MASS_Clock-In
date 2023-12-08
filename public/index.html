@@ -100,6 +100,11 @@
         id="clockedInMessage"
         class="container d-flex justify-content-center"
       ></div>
+      <div class="d-flex justify-content-center">
+        <div class="col-md-3">
+          <select id="region" class="form-control"></select>
+        </div>
+      </div>
       <div class="container d-flex justify-content-center">
         <button id="clockIn" class="btn btn-success p-3 mt-3">Clock-In</button>
       </div>
@@ -113,6 +118,7 @@
               <th scope="col">Name</th>
               <th scope="col">Time</th>
               <th scope="col">Place</th>
+              <th scope="col">Region</th>
             </tr>
           </thead>
           <tbody id="allSubmissionsBody"></tbody>
@@ -122,6 +128,7 @@
             <tr>
               <th scope="col">Time</th>
               <th scope="col">Place</th>
+              <th scope="col">Region</th>
             </tr>
           </thead>
           <tbody id="userSubmissionsBody"></tbody>

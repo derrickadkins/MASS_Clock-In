@@ -52,11 +52,30 @@ document.getElementById("logout").addEventListener("click", () => {
   });
 });
 
+function populateRegionsDropDown() {
+  // get regions array from regions document in MASS collection
+  const regionsRef = doc(db, "MASS", "regions");
+  getDoc(regionsRef).then((doc) => {
+    if (doc.exists()) {
+      const regions = doc.data().regions;
+      const regionsDropDown = document.getElementById("region");
+      regions.forEach((region) => {
+        const regionOption = document.createElement("option");
+        regionOption.value = region;
+        regionOption.textContent = region;
+        regionsDropDown.appendChild(regionOption);
+      });
+    }
+  });
+}
+
 async function applyUser(user) {
   // close collapsable menu
   document.getElementById("navbarNav").classList.remove("show");
 
   if (user) {
+    populateRegionsDropDown();
+
     const docRef = doc(db, "submissions", user.uid);
     // set user email and name in firestore
     await setDoc(
@@ -72,13 +91,13 @@ async function applyUser(user) {
     auth.currentUser.isAdmin = false;
 
     // Get admins document from users collection
-    const adminsRef = doc(db, "users", "admins");
+    const adminsRef = doc(db, "MASS", "users");
     try {
       const docSnap = await getDoc(adminsRef);
 
       if (docSnap.exists()) {
         // Check if user is admin
-        if (docSnap.data().emails.includes(user.email)) {
+        if (docSnap.data().admins.includes(user.email)) {
           auth.currentUser.isAdmin = true;
         }
       }
@@ -163,16 +182,12 @@ function checkIfClockedIn() {
 
 async function clockIn(position) {
   // submit to firestore
-  const timestamp = Date.now();
-  const geopoint = new GeoPoint(
-    position.coords.latitude,
-    position.coords.longitude
-  );
   const docRef = doc(db, "submissions", auth.currentUser.uid);
 
   const newSubmission = {
-    time: timestamp,
-    place: geopoint,
+    time: Date.now(),
+    place: new GeoPoint(position.coords.latitude, position.coords.longitude),
+    region: document.getElementById("region").value,
   };
 
   await setDoc(
@@ -315,6 +330,10 @@ function addSubmissionRow(submission) {
   placeData.appendChild(placeLink);
   row.appendChild(placeData);
 
+  let regionData = document.createElement("td");
+  regionData.textContent = submission.region;
+  row.appendChild(regionData);
+
   document.getElementById(tableBodyId).appendChild(row);
 }
 
@@ -392,6 +411,7 @@ function initDataTable(tableId, dateColumnIndex = 1) {
 
 function showClockedIn() {
   document.getElementById("clockIn").hidden = true;
+  document.getElementById("region").hidden = true;
   const msg = document.getElementById("clockedInMessage");
   msg.innerHTML = `You have clocked in today.`;
   msg.classList.add("pt-3");
