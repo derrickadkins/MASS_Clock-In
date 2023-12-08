@@ -104,18 +104,15 @@ async function applyUser(user) {
     document.getElementById(
       "user"
     ).innerHTML = `Signed in as ${user.displayName}<br><a href="https://www.gmail.com" target="_blank">${user.email}</a>`;
-
-    setUserContentVisibility(true);
   } else {
     // user is signed out
     document.getElementById("user").innerHTML = "";
 
     clearDataTable("#userSubmissionsTable");
     clearDataTable("#allSubmissionsTable");
-
-    setUserContentVisibility(false);
   }
 
+  setUserContentVisibility(user);
   document.getElementById("response").hidden = true;
 }
 
