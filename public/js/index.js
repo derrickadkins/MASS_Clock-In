@@ -52,30 +52,15 @@ document.getElementById("logout").addEventListener("click", () => {
   });
 });
 
-function populateRegionsDropDown() {
-  // get regions array from regions document in MASS collection
-  const regionsRef = doc(db, "MASS", "regions");
-  getDoc(regionsRef).then((doc) => {
-    if (doc.exists()) {
-      const regions = doc.data().regions;
-      const regionsDropDown = document.getElementById("region");
-      regions.forEach((region) => {
-        const regionOption = document.createElement("option");
-        regionOption.value = region;
-        regionOption.textContent = region;
-        regionsDropDown.appendChild(regionOption);
-      });
-    }
-  });
-}
+document.getElementById("region").addEventListener("change", function () {
+  document.cookie = "region=" + this.value;
+});
 
 async function applyUser(user) {
   // close collapsable menu
   document.getElementById("navbarNav").classList.remove("show");
 
   if (user) {
-    populateRegionsDropDown();
-
     const docRef = doc(db, "submissions", user.uid);
     // set user email and name in firestore
     await setDoc(
@@ -123,6 +108,14 @@ async function applyUser(user) {
     document.getElementById(
       "user"
     ).innerHTML = `Signed in as ${user.displayName}<br><a href="https://www.gmail.com" target="_blank">${user.email}</a>`;
+
+    // Get saved region value from cookie
+    const cookies = document.cookie.split("; ");
+    const regionCookie = cookies.find((row) => row.startsWith("region="));
+    if (regionCookie) {
+      const region = regionCookie.split("=")[1];
+      document.getElementById("region").value = region;
+    }
   } else {
     // user is signed out
     document.getElementById("user").innerHTML = "";
