@@ -105,8 +105,6 @@ async function applyUser(user) {
       "user"
     ).innerHTML = `Signed in as ${user.displayName}<br><a href="https://www.gmail.com" target="_blank">${user.email}</a>`;
 
-    document.getElementById("response").hidden = true;
-
     setUserContentVisibility(true);
   } else {
     // user is signed out
@@ -117,6 +115,8 @@ async function applyUser(user) {
 
     setUserContentVisibility(false);
   }
+
+  document.getElementById("response").hidden = true;
 }
 
 function setUserContentVisibility(isSignedIn) {
